@@ -1,0 +1,39 @@
+# file: Cargo.toml
+# date: 2026-09-17
+#
+# The example program, i.e. the Rust counterpart of the C++ template's
+# `src/bin/example.cpp` + its `add_executable(example ...)` block.
+#
+# Programs live in their own crate rather than in `example_lib/src/bin/` so that
+# a binary can depend on several libraries of this workspace without any of those
+# libraries having to know about it.
+
+[package]
+name = "example_bin"
+description = "Example program built on top of `example_lib`"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+# The crate is `example_bin` but the produced executable is `example`, matching
+# the C++ template's `./build/build/Release/example`.
+[[bin]]
+name = "example"
+path = "src/main.rs"
+
+[dependencies]
+example_lib.workspace = true
+ndarray.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+[features]
+default = []
+# Forwards the switch to the library; enabling it here enables it there too.
+dummy_compile_option = ["example_lib/dummy_compile_option"]
+
+[lints]
+workspace = true

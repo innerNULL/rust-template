@@ -1,0 +1,16 @@
+# file: rust-toolchain.toml
+# date: 2026-09-17
+#
+# The Rust counterpart of `conan_profiles/default`: it pins the compiler that
+# builds this workspace. `rustup` reads this file automatically, so every
+# `cargo`/`rustc` invocation inside the repository uses the same toolchain no
+# matter what the user's global default is.
+#
+# It is a no-op when `cargo` comes from conda (see `environment.yaml`) instead of
+# rustup, because only rustup honours it. Keeping both pinned to the same version
+# is what makes the two entry points interchangeable.
+[toolchain]
+channel = "1.93.1"
+profile = "minimal"
+components = ["rustfmt", "clippy"]
+targets = ["x86_64-unknown-linux-gnu"]

@@ -1,0 +1,21 @@
+# file: requirements.txt
+# date: 2026-09-17
+#
+# Python packages needed to build and test the binding under
+# ./bindings/python/example_lib. The interpreter itself, the Rust toolchain and
+# the system libraries are pinned in `environment.yaml` instead.
+#
+#   pip install -r requirements.txt
+#
+# Pinned with `==` for reproducibility. `numpy` is held below 2.5 because 2.5
+# dropped CPython 3.11, the interpreter `environment.yaml` pins; bump both
+# together or not at all.
+
+# Builds the PyO3 extension module and packages it as a wheel; the replacement
+# for the C++ template's `pybind11_add_module`.
+maturin==1.15.0
+# Runtime dependency of the binding: the `numpy` Rust crate converts to and from
+# whatever NumPy the importing interpreter provides.
+numpy==2.4.6
+# Test runner for ./bindings/python/example_lib/tests.
+pytest==9.1.1

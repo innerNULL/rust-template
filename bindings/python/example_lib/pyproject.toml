@@ -1,0 +1,36 @@
+# file: pyproject.toml
+# date: 2026-09-17
+#
+# Packaging metadata for the `example_lib` Python extension. `maturin` reads it
+# to build a wheel out of the crate next to it, which is what replaces the C++
+# template's `pybind11_add_module` + manual copying of the built `.so`.
+#
+# Build a wheel:            maturin build --release -m bindings/python/example_lib/pyproject.toml
+# Install into the venv:    maturin develop --release -m bindings/python/example_lib/pyproject.toml
+
+[build-system]
+requires = ["maturin>=1.15,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "py-example-lib"
+description = "Python binding for the Rust example_lib crate"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+# `dynamic` hands these fields to maturin, which reads them from Cargo.toml so
+# the crate version and the wheel version cannot drift apart.
+dynamic = ["version"]
+dependencies = ["numpy>=2.0"]
+
+[project.optional-dependencies]
+test = ["pytest>=9.0"]
+
+[tool.maturin]
+# Must match `[lib] name` in Cargo.toml and the `#[pymodule]` function name.
+module-name = "py_example_lib"
+# Strip debug symbols from the shipped `.so`; a release wheel is several times
+# smaller for it. Drop this line while debugging the extension with gdb/lldb.
+strip = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

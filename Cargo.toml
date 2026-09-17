@@ -1,0 +1,82 @@
+# file: Cargo.toml
+# date: 2026-09-17
+#
+# Workspace root. This is the Rust counterpart of the C++ template's top level
+# `CMakeLists.txt` + `conanfile.txt`: it declares which crates belong to the
+# project, pins every third-party dependency in one place, and sets the lint and
+# profile policy that every member inherits.
+
+[workspace]
+# Resolver 3 is the edition-2024 dependency resolver; it honours `rust-version`
+# when picking dependency versions.
+resolver = "3"
+members = [
+  "crates/example_lib",
+  "crates/example_bin",
+  "bindings/python/example_lib",
+]
+
+# Shared package metadata. Members opt in with `version.workspace = true` etc.,
+# so bumping the project version is a one-line change.
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.93"
+license = "MIT"
+repository = "https://github.com/innerNULL/rust-template"
+
+# The Rust equivalent of `conanfile.txt`: one pin per dependency, reused by every
+# member through `dep.workspace = true`. Keeping the pins here is what stops two
+# crates from silently linking two different versions of the same library.
+[workspace.dependencies]
+# Internal crates are referenced by path, so `crates/example_lib` is the single
+# source of truth for the library the bin and the Python binding share.
+example_lib = { path = "crates/example_lib" }
+
+# `ndarray` <-> the C++ side's numeric containers, and the type that the `numpy`
+# crate converts to/from `numpy.ndarray` without copying.
+ndarray = "0.17"
+# `numpy` and `pyo3` are a matched pair: numpy 0.29 only builds against pyo3 0.29.
+# Bump them together, never one at a time.
+numpy = "0.29"
+pyo3 = "0.29"
+# `serde` + `serde_json` replace glaze / nlohmann_json.
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+# `tracing` replaces spdlog.
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# The Rust counterpart of the C++ template's `-Wall -Wextra -Wpedantic ...` block.
+# Members inherit it with `[lints] workspace = true`.
+# `priority = -1` makes a lint *group* evaluate before the individual lints below
+# it, so a single lint can still be turned back off without dropping the group.
+[workspace.lints.rust]
+missing_debug_implementations = "warn"
+unreachable_pub = "warn"
+unused_qualifications = "warn"
+rust_2018_idioms = { level = "warn", priority = -1 }
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+# `pedantic` wants every identifier-shaped word in prose wrapped in backticks.
+# This template quotes a lot of C++ and Python names in its comments, so the
+# lint would be pure noise here; drop this line in a project that does not.
+doc_markdown = "allow"
+undocumented_unsafe_blocks = "warn"
+
+[profile.release]
+# Line tables only: keeps backtraces and profiles readable without paying for
+# full debug info. Mirrors the C++ template's `-fno-omit-frame-pointer` intent.
+debug = 1
+# Thin LTO is the good default: most of the cross-crate inlining of full LTO at a
+# small fraction of the link time.
+lto = "thin"
+codegen-units = 16
+# Must stay `unwind`: PyO3 turns Rust panics into Python exceptions, which
+# requires unwinding. `panic = "abort"` would abort the host interpreter instead.
+panic = "unwind"
+
+[profile.bench]
+debug = 1
