@@ -1,0 +1,33 @@
+# file: Cargo.toml
+# date: 2026-09-17
+#
+# The example library crate, i.e. the Rust counterpart of the C++ template's
+# `src/example_lib` + its `add_library(example_lib ...)` block.
+
+[package]
+name = "example_lib"
+description = "Example library crate showing how a library is laid out in this template"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+ndarray.workspace = true
+serde.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+# Only needed by the tests under `./tests`, never shipped to downstream users.
+serde_json.workspace = true
+
+[features]
+# The Rust counterpart of the C++ template's `DUMMY_COMPILE_OPTION` cmake option.
+# A feature is the idiomatic way to expose a compile-time switch; it is off by
+# default and enabled with `cargo build --features dummy_compile_option`.
+default = []
+dummy_compile_option = []
+
+[lints]
+workspace = true

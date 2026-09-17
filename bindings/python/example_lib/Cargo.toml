@@ -1,0 +1,46 @@
+# file: Cargo.toml
+# date: 2026-09-17
+#
+# Python binding for `example_lib`, the counterpart of the C++ template's
+# `bindings/python/example_lib/CMakeLists.txt`. PyO3 replaces pybind11 and
+# `maturin` replaces `pybind11_add_module`.
+
+[package]
+name = "py_example_lib"
+description = "Python binding for `example_lib`"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+# The importable module name. Python looks for an `example_lib`-shaped file, so
+# keeping `name` equal to the `#[pymodule]` function name is what makes
+# `import py_example_lib` work.
+name = "py_example_lib"
+# `cdylib` is the only thing CPython can load. An `rlib` is deliberately absent:
+# nothing in this workspace should depend on the binding, only on `example_lib`.
+crate-type = ["cdylib"]
+# A `cdylib` built with `extension-module` leaves the CPython symbols undefined
+# on purpose, so a test harness linked against it would not run. Tests for this
+# layer are written in Python instead, under `./tests`.
+test = false
+doctest = false
+
+[dependencies]
+example_lib.workspace = true
+ndarray.workspace = true
+# `extension-module` tells PyO3 not to link libpython: the symbols are resolved
+# by the interpreter that loads the module. Dropping it produces a library that
+# only works against the exact interpreter it was built against.
+pyo3 = { workspace = true, features = ["extension-module"] }
+# `numpy` bridges `ndarray` and `numpy.ndarray`. Its version must match `pyo3`'s.
+numpy.workspace = true
+
+[features]
+default = []
+dummy_compile_option = ["example_lib/dummy_compile_option"]
+
+[lints]
+workspace = true

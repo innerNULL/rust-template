@@ -19,3 +19,28 @@ target
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# --- Project specific ---------------------------------------------------------
+# Note that `Cargo.lock` is deliberately NOT ignored: this workspace ships
+# binaries and a wheel, so the exact dependency graph has to be reproducible.
+
+# Conda prefix created from environment.yaml, and the containerized build scratch
+# directory created by ./scripts/containerized_build.sh.
+_venv
+_workspace
+_cache
+
+# Python extension modules copied next to the sources for a quick `import`, plus
+# the usual interpreter and test-runner leftovers.
+*.so
+__pycache__/
+.pytest_cache/
+*.egg-info/
+
+# Wheels built by maturin.
+wheels/
+*.whl
+
+# vim
+*.un~
+*.swp

@@ -1,0 +1,8 @@
+# file: rustfmt.toml
+# date: 2026-09-17
+#
+# Only stable options live here: rustfmt rejects the whole file if it contains a
+# nightly-only key, which would silently leave the project unformatted in CI.
+edition = "2024"
+max_width = 100
+newline_style = "Unix"

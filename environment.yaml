@@ -1,10 +1,11 @@
 # file: environment.yaml
 # date: 2026-09-17
 #
-# Locks the Python side of the build: the interpreter, `maturin` to compile the
-# extension module under ./bindings, and `numpy` + `pytest` to exercise it.
-# Every version is pinned with `==` so the environment is reproducible; refresh
-# the pins deliberately, not by accident.
+# Locks the interpreter and the system-level libraries the build needs. Python
+# packages are NOT listed here: they live in `./requirements.txt` and are
+# installed with `pip install -r requirements.txt` once this environment is
+# active. Every version is pinned with `==` so the environment is reproducible;
+# refresh the pins deliberately, not by accident.
 #
 # `rustc` and `cargo` are NOT locked here by default. They are locked in
 # `rust-toolchain.toml`, which rustup honours automatically. See the `rust` pin
