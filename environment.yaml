@@ -1,0 +1,23 @@
+# file: environment.yaml
+# date: 2026-09-17
+#
+# Locks the Python side of the build: the interpreter, `maturin` to compile the
+# extension module under ./bindings, and `numpy` + `pytest` to exercise it.
+# Every version is pinned with `==` so the environment is reproducible; refresh
+# the pins deliberately, not by accident.
+#
+# `rustc` and `cargo` are NOT locked here by default. They are locked in
+# `rust-toolchain.toml`, which rustup honours automatically. See the `rust` pin
+# at the bottom of this file if you would rather have conda provide them.
+name: venv
+channels:
+  - conda-forge
+  # conda-forge only: mixing in `defaults` lets the solver pick different builds
+  # of the same version and quietly breaks reproducibility.
+  - nodefaults
+dependencies:
+  - python==3.11.16
+  - pip==26.2.1
+  - rust==1.93.1
+  - openssl==3.6.4
+  - pkg-config==0.29.2
