@@ -45,15 +45,20 @@ Try example libraries's Python binding:
 cp ./target/debug/libpy_example_lib.so ./
 
 python -c "
+import numpy as np
 import py_example_lib
 
 a = py_example_lib.add(1, 2)
 b = py_example_lib.Bot()
 c = b.move_to('up')
+d = py_example_lib.scale(np.array([[1.0, 2.0], [3.0, 4.0]]), 2.0)
+e = py_example_lib.row_means(d)
 
 print(a)
 print(b)
 print(c)
+print(d)
+print(e)
 "
 ```
 
